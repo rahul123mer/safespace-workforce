@@ -40,7 +40,12 @@ elif [[ -x "$BACKEND/.venv/Scripts/python.exe" ]]; then
   PY="$BACKEND/.venv/Scripts/python.exe"
 else
   say "Creating the backend virtual environment..."
-  SYS_PY="$(command -v python3 || command -v python || true)"
+  # First interpreter that is 3.11+ (on Windows `python3` may be an older Microsoft Store Python).
+  SYS_PY=""
+  for cand in python3.12 python3.11 python3 python py; do
+    p="$(command -v "$cand" || true)"
+    [[ -n "$p" ]] && "$p" -c 'import sys; sys.exit(sys.version_info < (3, 11))' 2>/dev/null && { SYS_PY="$p"; break; }
+  done
   [[ -n "$SYS_PY" ]] || fail "Python 3.11+ is required but was not found."
   "$SYS_PY" -m venv "$BACKEND/.venv"
   if [[ -x "$BACKEND/.venv/bin/python" ]]; then PY="$BACKEND/.venv/bin/python"; else PY="$BACKEND/.venv/Scripts/python.exe"; fi
