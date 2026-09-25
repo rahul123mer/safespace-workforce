@@ -238,7 +238,15 @@ For local testing without an existing PostgreSQL server, `./dev-db.sh start` cre
 ./start.sh --no-worker  # without the recognition worker (machine without the pipeline)
 ```
 
-The script creates the backend virtual environment and installs frontend dependencies on first run, checks the database connection, applies migrations, reports whether the recognition pipeline is available, and prefixes each service's log lines (`[api]`, `[worker]`, `[web]`). Ctrl+C stops everything. PostgreSQL itself must already be running. On Windows, run it from Git Bash.
+The script creates the backend virtual environment and installs frontend dependencies on first run, checks the database connection, applies migrations, reports whether the recognition pipeline is available, and prefixes each service's log lines (`[api]`, `[worker]`, `[web]`). Ctrl+C stops everything. PostgreSQL itself must already be running.
+
+**Windows (PowerShell or cmd):** `.sh` files do not run directly in PowerShell, and plain `bash` there is usually WSL, which cannot use Windows PostgreSQL or this project's Python environment. Use the wrappers instead, which run the scripts through Git Bash:
+
+```powershell
+cd C:\SSGC\SSGC-internal\employee-management
+.\start.cmd              # starts the local database (dev-db.sh), then start.sh; options pass through
+.\stop.cmd               # stops the API, worker, frontend and the local database
+```
 
 ### Starting each part separately
 
